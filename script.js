@@ -17,7 +17,7 @@ var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* tema */
 var root=document.documentElement;
-function setTheme(t){root.setAttribute("data-theme",t);$("theme").textContent=t==="jade"?"🫧 Mar":"🌲 Jade";save("jv.theme2",t)}
+function setTheme(t){root.setAttribute("data-theme",t);$("theme").textContent=t==="jade"?"🫧 Safira":"🌲 Jade";save("jv.theme2",t)}
 var sv=load("jv.theme2","jade");setTheme(sv==="mar"||sv==="neon"?"mar":"jade");
 function flipTheme(){setTheme(root.getAttribute("data-theme")==="jade"?"mar":"jade")}
 $("theme").onclick=flipTheme;$("b-theme").onclick=flipTheme;
