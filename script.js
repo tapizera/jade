@@ -23,7 +23,7 @@ setTheme(load("jv.theme2","jade")==="safira"?"safira":"jade");
 $("theme").onclick=function(){setTheme(root.getAttribute("data-theme")==="jade"?"safira":"jade");buildSettings()};
 $("b-theme").onclick=$("theme").onclick;
 
-/* abas antigo */ /*
+/* abas */ 
 var VIEWS=["painel","ajustes","foco","relaxar"];
 function view(){var h=location.hash.slice(1);if(VIEWS.indexOf(h)<0)h="painel";
   VIEWS.forEach(function(v){var s=$("v-"+v);if(s)s.hidden=v!==h;var t=$("t-"+v);if(t)t.setAttribute("aria-selected",String(v===h))});
@@ -33,14 +33,6 @@ function toPainel(){location.hash="painel"}
 $("exit").onclick=toPainel;$("fback").onclick=toPainel;
 addEventListener("keydown",function(e){if(e.key==="Escape"&&(location.hash==="#relaxar"||location.hash==="#foco"))toPainel()});
 addEventListener("hashchange",view);view();
-*/
-
-/* abas */
-var VIEWS=["painel","ajustes","foco","relaxar"];
-function view(){var h=location.hash.slice(1);if(VIEWS.indexOf(h)<0)h="painel";
-  VIEWS.forEach(function(v){var s=$("v-"+v);if(s)s.hidden=v!==h;var t=$("t-"+v);if(t)t.setAttribute("aria-selected",String(v===h));var b=$("b-"+v);if(b)b.setAttribute("aria-selected",String(v===h))});
-  document.body.className="v-"+h;$("exit").hidden=h!=="relaxar"}
-VIEWS.forEach(function(v){var t=$("t-"+v);if(t)t.onclick=function(){location.hash=v};var b=$("b-"+v);if(b)b.onclick=function(){location.hash=v}});
 
 /* relógio */ /*
 function tick(){
