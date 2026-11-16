@@ -1,4 +1,9 @@
-:root{--bg:#0e1b15;--bg2:#16301f;--panel:#142a1f;--line:#2f503c;--ink:#e8f0da;--mute:#9db89f;--acc:#7fd6a0;--acc2:#d9b45a;--warm:#e8b04a;--ok:#9be3a6;--track:#21402f;--r:18px;--sh:0 6px 18px rgba(0,0,0,.28);--gl:3px;--rain:.5;--grid:transparent;--font:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;--fs:17px;
+:root{
+  /*
+  --bg:#0e1b15;--bg2:#16301f;--panel:#142a1f;--line:#2f503c;--ink:#e8f0da;--mute:#9db89f;--acc:#7fd6a0;--acc2:#d9b45a;--warm:#e8b04a;--ok:#9be3a6;--track:#21402f */
+  --bg:#0a1f17;--bg2:#1e5740;--panel:#122f24;--line:#2f7050;--ink:#eaf5dc;--mute:#9fc4a6;--acc:#78d98a;--acc2:#e6d878;--warm:#f2c14e;--ok:#a6f08a;--track:#1e4a38;
+  
+;--r:18px;--sh:0 6px 18px rgba(0,0,0,.28);--gl:3px;--rain:.5;--grid:transparent;--font:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;--fs:17px;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root[data-theme="safira"]{--bg:#00022a;--bg2:#0654b0;--panel:#010f55;--line:#1d5fb0;--ink:#daeaf7;--mute:#8db4da;--acc:#50a5d8;--acc2:#7fa0ff;--warm:#ffd27a;--ok:#6ff2d4;--track:#082a73;--r:18px;--sh:0 6px 20px rgba(0,2,42,.5);--gl:6px;--rain:0;--grid:transparent}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -147,5 +152,22 @@ input[type=number]{font:inherit;background:var(--panel);color:var(--ink);border:
   .bn[aria-selected="true"]{color:var(--acc);background:color-mix(in srgb,var(--acc) 16%,transparent)}
   .bn.mid i{font-size:30px}
   .bn.mid{min-height:62px}
-  .v-foco #bnav,.v-relaxar #bnav{display:none}
+  #b-exit{display:none}
+  .v-foco #bnav{display:none}
+  .v-relaxar #bnav{grid-template-columns:1fr}
+  .v-relaxar #bnav .bn:not(#b-exit){display:none}
+  .v-relaxar #b-exit{display:flex}
 }
+
+.fly{position:fixed;inset:0;z-index:0;pointer-events:none;display:none;
+--fg:radial-gradient(circle,rgba(226,250,150,.95) 0 20%,rgba(190,235,110,.35) 40%,transparent 70%)}
+:root[data-theme="jade"] .fly{display:block}
+.fly::before,.fly::after{content:"";position:absolute;inset:0;background-repeat:no-repeat}
+.fly::before{background-image:var(--fg),var(--fg),var(--fg);background-size:14px 14px,10px 10px,16px 16px;
+background-position:15% 80%,60% 65%,85% 85%;animation:flyA 22s ease-in-out infinite alternate,tw 3.5s ease-in-out infinite alternate}
+.fly::after{background-image:var(--fg),var(--fg),var(--fg);background-size:12px 12px,18px 18px,9px 9px;
+background-position:35% 90%,75% 40%,8% 50%;animation:flyB 28s ease-in-out infinite alternate,tw 5s ease-in-out infinite alternate}
+@keyframes flyA{to{background-position:25% 20%,50% 30%,78% 25%}}
+@keyframes flyB{to{background-position:42% 25%,65% 80%,20% 15%}}
+@keyframes tw{from{opacity:.25}to{opacity:.9}}
+@media (prefers-reduced-motion:reduce){.fly::before,.fly::after{animation:none}}
