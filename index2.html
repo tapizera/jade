@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="jade">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jade</title>
+<meta name="theme-color" content="#0e1b15">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div id="bgimg" aria-hidden="true"></div>
+<div class="bub" aria-hidden="true"></div>
+<main>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="16" rx="10.5" ry="13.8" fill="var(--acc)" fill-opacity=".22" stroke="var(--acc)" stroke-width="1.8"/></svg>
+    <div><h1>Jade</h1><p class="sub" id="greet">Olá</p></div>
+  </div>
+  <div class="right">
+    <div class="tabs" role="tablist">
+      <button class="pill tab" id="t-painel" role="tab" type="button" aria-selected="true">💎 Painel</button>
+      <button class="pill tab" id="t-relaxar" role="tab" type="button" aria-selected="false">🌿 Relaxar</button>
+      <button class="pill tab" id="t-ajustes" role="tab" type="button" aria-selected="false">⚙️ Ajustes</button>
+    </div>
+    <a class="pill" id="graphbtn" href="https://ivgraph.com/app/" target="_blank" rel="noopener">🕸️ Grafo</a>
+    <button class="pill" id="exit" type="button" hidden>🌿 Sair do relaxar</button>
+    <button class="pill" id="theme" type="button">🫧 Safira</button>
+    <div class="clock"><span id="clk">--:--</span><small id="dt"></small></div>
+  </div>
+</header>
+
+<div id="v-painel">
+ <section class="panel quote" aria-live="polite"><p id="qt">…</p><small id="qa"></small></section>
+ <div class="cols" style="margin-top:16px">
+  <div class="col">
+   <section class="panel core" aria-label="Pendentes">
+     <div class="reactor">
+       <svg viewBox="0 0 200 200" role="img" aria-label="Progresso das listas">
+         <g class="spin"><circle cx="100" cy="100" r="94" fill="none" stroke="var(--acc)" stroke-width="1.5" stroke-dasharray="3 9" opacity=".6"/></g>
+         <circle cx="100" cy="100" r="78" fill="none" stroke="var(--track)" stroke-width="12"/>
+         <circle id="bar" class="bar" cx="100" cy="100" r="78" fill="none" stroke="var(--acc)" stroke-width="12" stroke-linecap="round" stroke-dasharray="490.1" stroke-dashoffset="490.1" transform="rotate(-90 100 100)"/>
+         <circle cx="100" cy="100" r="58" fill="none" stroke="var(--line)" stroke-width="1"/>
+         <text id="num" class="big" x="100" y="112" text-anchor="middle">0</text>
+         <text class="lbl" x="100" y="134" text-anchor="middle">pendentes</text>
+       </svg>
+     </div>
+     <p class="status" id="status"></p>
+   </section>
+   <section class="panel timer">
+     <h2 style="margin:0">Foco e pausa</h2>
+     <a class="btn" href="#foco">Abrir timer</a>
+     <p class="note" id="mini" style="margin:0">Pronto para começar</p>
+   </section>
+  </div>
+
+  <div class="col">
+   <section class="panel">
+     <h2>Minhas listas</h2>
+     <form class="cap" id="form">
+       <select id="sel" aria-label="Lista de destino"></select>
+       <input type="text" id="in" placeholder="Capturar agora" autocomplete="off" aria-label="Capturar agora">
+       <button class="btn" type="submit">Adicionar</button>
+     </form>
+     <div id="lists"></div>
+     <p class="note">As listas ficam salvas só neste aparelho. Backup e personalização em ⚙️ Ajustes.</p>
+   </section>
+  </div>
+
+  <div class="col">
+   <section class="panel">
+     <h2>Gavetas</h2>
+     <div class="grid" id="drawers"></div>
+     <p class="note">Toque para abrir. Nomes, ícones e links em ⚙️ Ajustes.</p>
+   </section>
+   <section class="panel">
+     <h2>Qual app para quê</h2>
+     <table id="apps"></table>
+     <p class="out" id="out"></p>
+   </section>
+  </div>
+ </div>
+</div>
+
+<section class="panel" id="v-ajustes" hidden>
+  <h2 style="font-size:26px;margin:0 0 14px">⚙️ Ajustes</h2>
+  <div id="set"></div>
+</section>
+<section class="foco" id="v-foco" hidden>
+  <button class="pill back" id="fback" type="button">← Painel</button>
+  <div class="tm">
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="88" fill="none" stroke="var(--track)" stroke-opacity=".8" stroke-width="9"/>
+      <circle id="tbar" cx="100" cy="100" r="88" fill="none" stroke="var(--acc)" stroke-width="9" stroke-linecap="round" stroke-dasharray="552.92" stroke-dashoffset="0" transform="rotate(-90 100 100)" style="transition:stroke-dashoffset .4s linear"/>
+    </svg>
+    <div id="tt" aria-live="off">25:00</div>
+  </div>
+  <div class="mode" id="tlabel">Foco de 25 min</div>
+  <div class="rw ctr">
+    <button class="pill pre" type="button" data-m="5">5</button><button class="pill pre" type="button" data-m="15">15</button><button class="pill pre" type="button" data-m="25">25</button><button class="pill pre" type="button" data-m="50">50</button>
+    <input type="number" id="tmin" min="1" max="180" aria-label="Minutos"><span class="mode">min</span>
+  </div>
+  <div class="rw ctr"><button class="btn" id="tgo" type="button">Iniciar</button><button class="pill" id="trs" type="button">Resetar</button></div>
+</section>
+</main>
+<nav id="bnav" aria-label="Navegação">
+  <button class="bn" id="b-theme" type="button"><i>🫧</i>Tema</button>
+  <button class="bn" id="b-relaxar" type="button" aria-selected="false"><i>🍃</i>Relaxar</button>
+  <button class="bn mid" id="b-painel" type="button" aria-selected="true"><i>💎</i>Painel</button>
+  <a class="bn" id="b-grafo" href="https://ivgraph.com/app/" target="_blank" rel="noopener"><i>🕸️</i>Grafo</a>
+  <button class="bn" id="b-ajustes" type="button" aria-selected="false"><i>⚙️</i>Ajustes</button>
+</nav>
+
+<script src="script.js"></script>
+</body>
+</html>
