@@ -12,15 +12,28 @@ function clean(c){c=c||{};return{name:sx(c.name,40),
 var DEF={name:"",drawers:[{e:"📥",n:"Entrada",d:"Captura rápida",u:""},{e:"📚",n:"Estudos",d:"Cursos e anotações",u:""},{e:"🧠",n:"Ideias",d:"Princípios e reflexões",u:""},{e:"⚙️",n:"Sistema",d:"Regras e apps",u:""}],
   apps:[{f:"📅 Prazos",a:"🗓️ Agenda"},{f:"⏰ Hábitos",a:"📱 App de hábitos"},{f:"🛎️ Lembretes",a:"🔔 App de lembretes"},{f:"📝 Notas",a:"📝 App de notas"}],out:""};
 var CFG=clean(load("jade.cfg",null)||DEF);
-var BG=load("jade.bg","");if(typeof BG!=="string"||BG.indexOf("data:image/")!==0)BG="";
+var BG_J=load("jade.bg","");if(typeof BG_J!=="string"||BG_J.indexOf("data:image/")!==0)BG_J="";
+var BG_S=load("safira.bg","");if(typeof BG_S!=="string"||BG_S.indexOf("data:image/")!==0)BG_S="";
 var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* tema */
 var root=document.documentElement;
 function setTheme(t){root.setAttribute("data-theme",t);$("theme").textContent=t==="jade"?"🫧 Safira":"🌲 Jade";save("jv.theme2",t)}
-var sv=load("jv.theme2","jade");setTheme(sv==="mar"||sv==="neon"?"mar":"jade");
-function flipTheme(){setTheme(root.getAttribute("data-theme")==="jade"?"mar":"jade")}
-$("theme").onclick=flipTheme;$("b-theme").onclick=flipTheme;
+setTheme(load("jv.theme2","jade")==="safira"?"safira":"jade");
+$("theme").onclick=function(){setTheme(root.getAttribute("data-theme")==="jade"?"safira":"jade");buildSettings()};
+$("b-theme").onclick=$("theme").onclick;
+
+/* abas antigo */ /*
+var VIEWS=["painel","ajustes","foco","relaxar"];
+function view(){var h=location.hash.slice(1);if(VIEWS.indexOf(h)<0)h="painel";
+  VIEWS.forEach(function(v){var s=$("v-"+v);if(s)s.hidden=v!==h;var t=$("t-"+v);if(t)t.setAttribute("aria-selected",String(v===h))});
+  document.body.className="v-"+h;$("exit").hidden=h!=="relaxar"}
+VIEWS.forEach(function(v){var t=$("t-"+v);if(t)t.onclick=function(){location.hash=v}});
+function toPainel(){location.hash="painel"}
+$("exit").onclick=toPainel;$("fback").onclick=toPainel;
+addEventListener("keydown",function(e){if(e.key==="Escape"&&(location.hash==="#relaxar"||location.hash==="#foco"))toPainel()});
+addEventListener("hashchange",view);view();
+*/
 
 /* abas */
 var VIEWS=["painel","ajustes","foco","relaxar"];
@@ -28,10 +41,15 @@ function view(){var h=location.hash.slice(1);if(VIEWS.indexOf(h)<0)h="painel";
   VIEWS.forEach(function(v){var s=$("v-"+v);if(s)s.hidden=v!==h;var t=$("t-"+v);if(t)t.setAttribute("aria-selected",String(v===h));var b=$("b-"+v);if(b)b.setAttribute("aria-selected",String(v===h))});
   document.body.className="v-"+h;$("exit").hidden=h!=="relaxar"}
 VIEWS.forEach(function(v){var t=$("t-"+v);if(t)t.onclick=function(){location.hash=v};var b=$("b-"+v);if(b)b.onclick=function(){location.hash=v}});
-function toPainel(){location.hash="painel"}
-$("exit").onclick=toPainel;$("fback").onclick=toPainel;
-addEventListener("keydown",function(e){if(e.key==="Escape"&&(location.hash==="#relaxar"||location.hash==="#foco"))toPainel()});
-addEventListener("hashchange",view);view();
+
+/* relógio */ /*
+function tick(){
+  var d=new Date(),h=d.getHours();
+  $("clk").textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  $("dt").textContent=d.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+  $("greet").textContent=(h<5?"Boa madrugada":h<12?"Bom dia":h<18?"Boa tarde":"Boa noite")+(CFG.name?", "+CFG.name:"")}
+tick();setInterval(tick,20000); 
+*/
 
 /* relógio */
 function tick(){
@@ -170,7 +188,19 @@ function renderPanel(){
   CFG.apps.forEach(function(a){var r=mk("tr");r.appendChild(mk("td","",a.f));r.appendChild(mk("td","",a.a));t.appendChild(r)});
   var o=$("out");o.textContent=CFG.out?"❌ Fora: "+CFG.out:"";o.hidden=!CFG.out}
 function saveCfg(){save("jade.cfg",CFG)}
+
+/*
+function applyBg(){var g="linear-gradient(rgba(6,18,12,.55),rgba(6,18,12,.74))";$("bgimg").style.backgroundImage=BG?g+',url("'+BG+'")':g+',url("fundo.gif")'}
+*/
+/*
 function applyBg(){if(BG)root.style.setProperty("--jbg",'url("'+BG+'")');else root.style.removeProperty("--jbg")}
+*/
+
+function applyBg(){
+  if(BG_J)root.style.setProperty("--bg-jade",'url("'+BG_J+'")');else root.style.removeProperty("--bg-jade");
+  if(BG_S){root.style.setProperty("--bg-safira",'url("'+BG_S+'")');root.style.setProperty("--has-safira","block")}
+  else{root.style.removeProperty("--bg-safira");root.style.setProperty("--has-safira","none")}
+}
 
 /* ajustes */
 function inp(ph,val,cls,fn){var i=mk("input",cls);i.type="text";i.placeholder=ph;i.value=val;i.oninput=function(){fn(i.value)};return i}
@@ -182,28 +212,23 @@ function buildSettings(){
   var a=sec("Você");
   a.appendChild(rw([inp("Seu nome",CFG.name,"",function(v){CFG.name=v;saveCfg();tick()})]));S.appendChild(a);
 
-  var b=sec("Fundo (tema Jade)");
+  var isSaf=root.getAttribute("data-theme")==="safira";
+  var curBG=isSaf?BG_S:BG_J;
+  var b=sec("Fundo ("+(isSaf?"tema Safira":"tema Jade")+")");
   var f=mk("input");f.type="file";f.accept="image/*";f.hidden=true;
   f.onchange=function(){var x=f.files[0];if(!x)return;
     if(!/^image\//.test(x.type)){alert("Escolha uma imagem");return}
     if(x.size>3*1024*1024){alert("Imagem grande demais (máximo 3 MB)");return}
     var r=new FileReader();r.onload=function(){
-      try{localStorage.setItem("jade.bg",JSON.stringify(r.result))}catch(e){alert("Não coube no armazenamento do navegador");return}
-      BG=r.result;applyBg();setTheme("jade");pv.src=BG;pv.hidden=false;st.textContent="Imagem aplicada ✓ (tema Jade ligado)"};r.onerror=function(){alert("Não consegui ler o arquivo")};r.readAsDataURL(x)};
-  var st=mk("p","note",BG?"Imagem personalizada ativa.":"Nenhuma imagem personalizada.");
-  var pv=mk("img");pv.alt="Prévia";pv.style.cssText="max-width:180px;border-radius:10px;margin:6px 0";pv.hidden=!BG;if(BG)pv.src=BG;
-  b.appendChild(rw([btn("Escolher imagem",function(){f.click()}),btn("Remover imagem",function(){BG="";save("jade.bg","");applyBg();pv.hidden=true;st.textContent="Nenhuma imagem personalizada."}),f]));
-  b.appendChild(pv);b.appendChild(st);b.appendChild(mk("p","note","GIF ou imagem de até 3 MB. Fica salva só neste aparelho."));S.appendChild(b);
-
-  var c=sec("Gavetas");
-  CFG.drawers.forEach(function(d,k){
-    c.appendChild(rw([inp("🙂",d.e,"sm",function(v){d.e=v;saveCfg();renderPanel()}),
-      inp("Nome",d.n,"",function(v){d.n=v;saveCfg();renderPanel()}),
-      inp("Descrição",d.d,"",function(v){d.d=v;saveCfg();renderPanel()}),
-      inp("Link https://…",d.u,"",function(v){d.u=ux(v.trim());saveCfg()}),
-      btn("✕",function(){CFG.drawers.splice(k,1);saveCfg();renderPanel();buildSettings()})]))});
-  if(CFG.drawers.length<12)c.appendChild(btn("+ Adicionar gaveta",function(){CFG.drawers.push({e:"📁",n:"Nova",d:"",u:""});saveCfg();renderPanel();buildSettings()}));
-  S.appendChild(c);
+      try{localStorage.setItem(isSaf?"safira.bg":"jade.bg",JSON.stringify(r.result))}catch(e){alert("Não coube no armazenamento do navegador");return}
+      if(isSaf)BG_S=r.result;else BG_J=r.result;
+      applyBg();pv.src=r.result;pv.hidden=false;st.textContent="Imagem aplicada ✓"};r.onerror=function(){alert("Não consegui ler o arquivo")};r.readAsDataURL(x)};
+  var st=mk("p","note",curBG?"Imagem personalizada ativa neste tema.":"Nenhuma imagem personalizada neste tema.");
+  var pv=mk("img");pv.alt="Prévia";pv.style.cssText="max-width:180px;border-radius:10px;margin:6px 0";pv.hidden=!curBG;if(curBG)pv.src=curBG;
+  b.appendChild(rw([btn("Escolher imagem",function(){f.click()}),btn("Remover imagem",function(){
+    if(isSaf){BG_S="";save("safira.bg","")}else{BG_J="";save("jade.bg","")}
+    applyBg();pv.hidden=true;st.textContent="Nenhuma imagem personalizada neste tema."}),f]));
+  b.appendChild(pv);b.appendChild(st);b.appendChild(mk("p","note","GIF ou imagem de até 3 MB. Cada tema guarda o seu próprio fundo."));S.appendChild(b);
 
   var d=sec("Qual app para quê");
   CFG.apps.forEach(function(p,k){
@@ -224,7 +249,7 @@ function buildSettings(){
   var z=sec("Backup");
   var imp=mk("input");imp.type="file";imp.accept="application/json";imp.hidden=true;
   z.appendChild(rw([btn("⬇️ Exportar tudo",function(){
-      var data=JSON.stringify({v:2,cfg:CFG,lists:lists,bg:BG},null,2);
+      var data=JSON.stringify({v:2,cfg:CFG,lists:lists,bg:BG_J,bgS:BG_S},null,2);
       var a=mk("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download="jade-backup.json";
       document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1000)}),
     btn("⬆️ Importar",function(){imp.click()}),imp]));
@@ -236,7 +261,10 @@ function buildSettings(){
       if(!confirm("Substituir tudo deste aparelho pelo conteúdo do arquivo?"))return;
       lists=o.lists.slice(0,12).map(function(l){return{n:sx(l.n,60),i:l.i.map(function(x){return{t:sx(x.t,300),d:!!x.d}})}});
       CFG=clean(o.cfg||DEF);saveCfg();
-      BG=(typeof o.bg==="string"&&o.bg.indexOf("data:image/")===0&&o.bg.length<4500000)?o.bg:"";save("jade.bg",BG);
+
+      BG_J=(typeof o.bg==="string"&&o.bg.indexOf("data:image/")===0&&o.bg.length<4500000)?o.bg:"";save("jade.bg",BG_J);
+      BG_S=(typeof o.bgS==="string"&&o.bgS.indexOf("data:image/")===0&&o.bgS.length<4500000)?o.bgS:"";save("safira.bg",BG_S);
+      
       applyBg();commit();renderPanel();buildSettings();tick()}catch(err){alert("Arquivo inválido")}imp.value=""};
     r.readAsText(fl)};
   z.appendChild(mk("p","note","Tudo fica salvo só neste aparelho. Exporte para levar para outro ou guardar uma cópia."));
