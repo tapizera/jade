@@ -63,7 +63,7 @@ var Q=[
 ["Nada começa perfeito, começa rabiscando",""],
 ["Aceita a bagunça e elimina fazendo!",""],
 ["Foco = consequência da falta de distrações",""],
-["Não fique na ferramenta, foque no objetivo",""],
+["Não foque na ferramenta, foque no objetivo",""],
 ["Descansar é um pedaço essencial da produtividade",""],
 ["Analise oq já funcionou e replique",""],
 ["Tudo oq vc quer está do outro lado do medo",""],
@@ -106,6 +106,9 @@ var openIdx=[0];
 var editing=false;
 function ib(t,fn){var b=document.createElement("button");b.type="button";b.className="x";b.textContent=t;b.onclick=fn;return b}
 function commit(){if(!save("jv.lists3",lists))alert("Sem espaço no navegador! Remova ou diminua o fundo em Ajustes.");render()}
+
+/* troquei a função render pra subitens e link */
+function units(l){var u=0,d=0;l.i.forEach(function(it){if(it.s&&it.s.length){u+=it.s.length;d+=it.s.filter(function(y){return y.d}).length}else{u++;if(it.d)d++}});return[u,d]}
 function render(){
   var sel=$("sel"),cur=sel.value||"0";sel.textContent="";
   lists.forEach(function(l,k){var o=document.createElement("option");o.value=k;o.textContent=l.n;sel.appendChild(o)});
@@ -114,27 +117,42 @@ function render(){
   lists.forEach(function(l,k){
     var d=document.createElement("details");d.className="lst";d.open=openIdx.indexOf(k)>-1;
     d.ontoggle=function(){var p=openIdx.indexOf(k);if(d.open&&p<0)openIdx.push(k);if(!d.open&&p>-1)openIdx.splice(p,1)};
-    var dn=l.i.filter(function(x){return x.d}).length;total+=l.i.length;done+=dn;
+    var u=units(l),dn=u[1],tl=u[0];total+=tl;done+=dn;
     var s=document.createElement("summary");
     var a=document.createElement("span");a.textContent=l.n;
-    var c=document.createElement("span");c.className="cnt";
-    c.textContent=dn+"/"+l.i.length+(l.i.length?" · "+Math.round(dn/l.i.length*100)+"%":"");
+    var c=document.createElement("span");c.className="cnt";c.textContent=dn+"/"+tl+(tl?" · "+Math.round(dn/tl*100)+"%":"");
     s.appendChild(a);s.appendChild(c);d.appendChild(s);
     var ul=document.createElement("ul");
     l.i.forEach(function(it,n){
       var li=document.createElement("li");li.className="it"+(it.d?" done":"");
       var cb=document.createElement("input");cb.type="checkbox";cb.checked=it.d;
-      cb.onchange=function(){it.d=cb.checked;commit()};
+      cb.onchange=function(){it.d=cb.checked;if(it.s)it.s.forEach(function(y){y.d=cb.checked});commit()};
       var t=document.createElement("span");t.textContent=it.t;
       var x=document.createElement("button");x.type="button";x.className="x";x.textContent="✕";x.setAttribute("aria-label","Apagar");
       x.onclick=function(){l.i=l.i.filter(function(y){return y!==it});commit()};
       li.appendChild(cb);li.appendChild(t);
       if(editing){
         li.appendChild(ib("✏️",function(){var v=prompt("Renomear item",it.t);if(v&&v.trim()){it.t=v.trim().slice(0,300);commit()}}));
+        li.appendChild(ib("➕",function(){var v=prompt("Novo subitem");if(v&&v.trim()){(it.s=it.s||[]).push({t:v.trim().slice(0,300),d:false});it.d=false;commit()}}));
         li.appendChild(ib("▲",function(){if(n>0){l.i.splice(n-1,0,l.i.splice(n,1)[0]);commit()}}));
         li.appendChild(ib("▼",function(){if(n<l.i.length-1){l.i.splice(n+1,0,l.i.splice(n,1)[0]);commit()}}));
-}
-li.appendChild(x);ul.appendChild(li)});
+      }
+      li.appendChild(x);
+      if(it.s&&it.s.length){
+        var sl=document.createElement("ul");sl.className="sub";
+        it.s.forEach(function(y,m){
+          var sb=document.createElement("li");sb.className="sb"+(y.d?" done":"");
+          var c2=document.createElement("input");c2.type="checkbox";c2.checked=y.d;
+          c2.onchange=function(){y.d=c2.checked;it.d=it.s.every(function(z){return z.d});commit()};
+          var t2=document.createElement("span");t2.textContent=y.t;
+          sb.appendChild(c2);sb.appendChild(t2);
+          if(editing){
+            sb.appendChild(ib("✏️",function(){var v=prompt("Renomear subitem",y.t);if(v&&v.trim()){y.t=v.trim().slice(0,300);commit()}}));
+            sb.appendChild(ib("✕",function(){it.s.splice(m,1);if(!it.s.length)delete it.s;else it.d=it.s.every(function(z){return z.d});commit()}));
+          }
+          sl.appendChild(sb)});
+        li.appendChild(sl)}
+      ul.appendChild(li)});
     d.appendChild(ul);box.appendChild(d)});
   var open=total-done;
   $("bar").style.strokeDashoffset=490.1*(1-(total?done/total:1));
@@ -143,6 +161,7 @@ li.appendChild(x);ul.appendChild(li)});
   var st=$("status");
   if(!open){st.textContent="Tudo feito";st.className="status good"}
   else{st.textContent=done+" de "+total+" feitos";st.className="status warn"}}
+  
 $("form").onsubmit=function(e){
   e.preventDefault();var v=$("in").value.trim();if(!v)return;
   var k=parseInt($("sel").value,10)||0;
@@ -154,6 +173,8 @@ var rbusy=false,ritems=[];
 function rpool(){var v=$("rsel").value,p=[];
   lists.forEach(function(l,k){if(v==="all"||+v===k)l.i.forEach(function(it){if(!it.d)p.push({t:it.t,l:l.n})})});
   return p}
+
+
 function rdraw(items,win){
   var x=$("wc").getContext("2d"),s=getComputedStyle(root),n=items.length,a=2*Math.PI/n,R=150,g=function(k){return s.getPropertyValue(k)};
   x.clearRect(0,0,300,300);
@@ -164,6 +185,8 @@ function rdraw(items,win){
     x.save();x.translate(R,R);x.rotate((i+.5)*a-Math.PI/2);x.textAlign="right";
     x.fillStyle=(i===win||(!odd&&i%2===0))?g("--bg"):g("--ink");x.font="700 15px Nunito,sans-serif";
     x.fillText(it.t.length>16?it.t.slice(0,15)+"…":it.t,R-12,5);x.restore()})}
+
+
 function rprep(){
   var p=rpool().sort(function(){return Math.random()-.5}),c=$("wc");ritems=p.slice(0,10);
   c.style.transition="none";c.style.transform="rotate(0deg)";void c.offsetWidth;c.style.transition="";
@@ -320,7 +343,7 @@ function buildSettings(){
       var ok=o.lists.every(function(l){return l&&typeof l.n==="string"&&Array.isArray(l.i)&&l.i.every(function(x){return x&&typeof x.t==="string"})});
       if(!ok)throw 0;
       if(!confirm("Substituir tudo deste aparelho pelo conteúdo do arquivo?"))return;
-      lists=o.lists.slice(0,12).map(function(l){return{n:sx(l.n,60),i:l.i.map(function(x){return{t:sx(x.t,300),d:!!x.d}})}});
+      lists=o.lists.slice(0,12).map(function(l){return{n:sx(l.n,60),i:l.i.map(function(x){var r={t:sx(x.t,300),d:!!x.d};if(Array.isArray(x.s)&&x.s.length)r.s=x.s.filter(function(y){return y&&typeof y.t==="string"}).slice(0,30).map(function(y){return{t:sx(y.t,300),d:!!y.d}});return r})}});
       CFG=clean(o.cfg||DEF);saveCfg();
 
       /* as listas passam a ser salvas antes dos fundos */
