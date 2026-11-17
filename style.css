@@ -78,7 +78,9 @@ td{padding:7px 0;border-top:1px solid var(--line);vertical-align:top}
 tr:first-child td{border-top:0}
 td:first-child{color:var(--mute);width:46%;padding-right:8px}
 .out{margin:10px 0 0;color:var(--warm);font-size:15px}
-.timer{display:grid;justify-items:center;gap:10px;text-align:center}
+/*.timer{display:grid;justify-items:center;gap:10px;text-align:center}*/
+.timer{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}
+#mini{display:none}
 .graph{display:grid;justify-items:center;gap:14px;text-align:center;padding:40px 20px}
 .graph p{margin:0;max-width:520px;color:var(--mute)}
 [hidden]{display:none!important}
@@ -125,9 +127,16 @@ background-position:12% 105%,57% 120%,86% 110%;animation:bub 14s linear infinite
 .rw input[type=text]{flex:1;min-width:110px}.rw input.sm{flex:0 0 64px;min-width:64px;text-align:center}
 .foco{display:grid;justify-items:center;gap:16px;padding:4px 0 24px}
 .foco .back{justify-self:start}
-.tm{position:relative;width:min(74vmin,520px);aspect-ratio:1}
+
+/*
+.tm{position:relative;width:min(74vmin, 520px);aspect-ratio:1}
 .tm svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 var(--gl) var(--acc))}
 #tt{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(56px,16vmin,150px);font-weight:800;text-shadow:0 2px 18px rgba(0,0,0,.65)}
+*/
+
+.tm{position:relative;width:min(74vmin,max(220px,calc(100dvh - 360px)),440px);aspect-ratio:1;container-type:inline-size}
+#tt{position:absolute;inset:0;display:grid;place-items:center;font-size:21cqw;font-weight:800;text-shadow:0 2px 18px rgba(0,0,0,.65)}
+
 .ctr{justify-content:center}.pre{min-width:52px}
 .foco .mode{text-shadow:0 1px 8px rgba(0,0,0,.6)}
 .v-foco header{display:none}
@@ -162,6 +171,7 @@ input[type=number]{font:inherit;background:var(--panel);color:var(--ink);border:
   .v-relaxar #bnav{grid-template-columns:1fr}
   .v-relaxar #bnav .bn:not(#b-exit){display:none}
   .v-relaxar #b-exit{display:flex}
+  .foco{min-height:calc(100dvh - 130px);align-content:center}
 }
 
 .fly{position:fixed;inset:0;z-index:0;pointer-events:none;display:none;
@@ -176,3 +186,18 @@ background-position:35% 90%,75% 40%,8% 50%;animation:flyB 28s ease-in-out infini
 @keyframes flyB{to{background-position:42% 25%,65% 80%,20% 15%}}
 @keyframes tw{from{opacity:.25}to{opacity:.9}}
 @media (prefers-reduced-motion:reduce){.fly::before,.fly::after{animation:none}}
+
+/* No Relaxar, o “Sair do relaxar” também fica centralizado. */
+@media (min-width:1000px){
+  header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+  .right{display:contents}
+  .clock{justify-self:end}
+}
+
+/* listas à direita ocupando as 2 linhas, o resto empilhado à esquerda. */
+@media (min-width:700px) and (max-width:1049px){
+  .cols{grid-template-rows:auto 1fr}
+  .cols>.col:nth-child(1){grid-column:1;grid-row:1}
+  .cols>.col:nth-child(2){grid-column:2;grid-row:1/span 2}
+  .cols>.col:nth-child(3){grid-column:1;grid-row:2}
+}
