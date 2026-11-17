@@ -108,7 +108,11 @@ function ib(t,fn){var b=document.createElement("button");b.type="button";b.class
 function commit(){if(!save("jv.lists3",lists))alert("Sem espaço no navegador! Remova ou diminua o fundo em Ajustes.");render()}
 
 /* troquei a função render pra subitens e link */
-function units(l){var u=0,d=0;l.i.forEach(function(it){if(it.s&&it.s.length){u+=it.s.length;d+=it.s.filter(function(y){return y.d}).length}else{u++;if(it.d)d++}});return[u,d]}
+
+/*function units(l){var u=0,d=0;l.i.forEach(function(it){if(it.s&&it.s.length){u+=it.s.length;d+=it.s.filter(function(y){return y.d}).length}else{u++;if(it.d)d++}});return[u,d]}*/
+
+function units(l){return[l.i.length,l.i.filter(function(x){return x.d}).length]}
+
 function render(){
   var sel=$("sel"),cur=sel.value||"0";sel.textContent="";
   lists.forEach(function(l,k){var o=document.createElement("option");o.value=k;o.textContent=l.n;sel.appendChild(o)});
@@ -131,6 +135,7 @@ function render(){
       var x=document.createElement("button");x.type="button";x.className="x";x.textContent="✕";x.setAttribute("aria-label","Apagar");
       x.onclick=function(){l.i=l.i.filter(function(y){return y!==it});commit()};
       li.appendChild(cb);li.appendChild(t);
+      if(it.s&&it.s.length){var bg=document.createElement("small");bg.className="sc";bg.textContent=it.s.filter(function(y){return y.d}).length+"/"+it.s.length;li.appendChild(bg)}
       if(editing){
         li.appendChild(ib("✏️",function(){var v=prompt("Renomear item",it.t);if(v&&v.trim()){it.t=v.trim().slice(0,300);commit()}}));
         li.appendChild(ib("➕",function(){var v=prompt("Novo subitem");if(v&&v.trim()){(it.s=it.s||[]).push({t:v.trim().slice(0,300),d:false});it.d=false;commit()}}));
@@ -194,7 +199,7 @@ function rprep(){
   $("rres").textContent=ritems.length?"Pronto para girar":"Nada pendente 🎉"}
 $("roll").onclick=function(){
   var s=$("rsel"),cur=s.value||"all";s.textContent="";
-  var o=document.createElement("option");o.value="all";o.textContent="🎲 Todas as listas";s.appendChild(o);
+  var o=document.createElement("option");o.value="all";o.textContent="🎡 Todas as listas";s.appendChild(o);
   lists.forEach(function(l,k){var q=document.createElement("option");q.value=k;q.textContent=l.n;s.appendChild(q)});
   s.value=cur;$("rl").hidden=false;rprep()};
 $("rsel").onchange=rprep;
