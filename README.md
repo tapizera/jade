@@ -21,7 +21,7 @@ Painel pessoal de foco e organização, feito em **HTML, CSS e JavaScript puro**
 
 | Tema | Clima |
 |------|-------|
-| 🌲 **Jade** | Verde de floresta, calmo e natural |
+| 🌲 **Jade** | Verde de floresta natural, com vaga-lumes voando |
 | 🫧 **Safira** | Azul profundo de fundo do mar, com bolhas subindo |
 
 Cada tema guarda o **seu próprio fundo** (imagem ou GIF de até 3 MB).
@@ -64,11 +64,12 @@ jade/
 - [ ] Calendário? 📅
 - [ ] Notas diárias? ✍️
 - [ ] Afirmações pra comparar percepções ao longo do tempo? 👀
-- [ ] Indeciso? - roleta de decisões 🎡
+- [x] Indeciso? - roleta de decisões 🎡
 - [ ] Lembretes? 🔔
 - [ ] Habit Tracker? 📅
-- [ ] Anexar imagem e link nas tarefa 🔗
-- [ ] Integração com Notion? 🔗
+- [ ] Anexar imagem nas tarefas 🖼️
+- [ ] Anexar links nas tarefa 🔗
+- [ ] Integração com Notion? ❓
 
 ## 💚 Inspirações
 
