@@ -238,6 +238,24 @@ function buildSettings(){
     applyBg();pv.hidden=true;st.textContent="Nenhuma imagem personalizada neste tema."}),f]));
   b.appendChild(pv);b.appendChild(st);b.appendChild(mk("p","note","GIF ou imagem de até 3 MB. Cada tema guarda o seu próprio fundo."));S.appendChild(b);
 
+  var g=sec("Gavetas");
+  CFG.drawers.forEach(function(w,k){
+    g.appendChild(rw([
+      inp("😀",w.e,"sm",function(v){w.e=v.slice(0,8);saveCfg();renderPanel()}),
+      inp("Nome",w.n,"",function(v){w.n=v.slice(0,40);saveCfg();renderPanel()}),
+      inp("Descrição",w.d,"",function(v){w.d=v.slice(0,60);saveCfg();renderPanel()})
+    ]));
+    g.appendChild(rw([
+      inp("Link (https://...)",w.u,"",function(v){w.u=ux(v);saveCfg();renderPanel()}),
+      btn("▲",function(){if(k>0){CFG.drawers.splice(k-1,0,CFG.drawers.splice(k,1)[0]);saveCfg();renderPanel();buildSettings()}}),
+      btn("▼",function(){if(k<CFG.drawers.length-1){CFG.drawers.splice(k+1,0,CFG.drawers.splice(k,1)[0]);saveCfg();renderPanel();buildSettings()}}),
+      btn("✕",function(){CFG.drawers.splice(k,1);saveCfg();renderPanel();buildSettings()})
+    ]));
+  });
+  if(CFG.drawers.length<12)g.appendChild(btn("+ Adicionar gaveta",function(){CFG.drawers.push({e:"📁",n:"Nova gaveta",d:"",u:""});saveCfg();renderPanel();buildSettings()}));
+  g.appendChild(mk("p","note","Link opcional, só https. Sem link, tocar na gaveta abre os Ajustes."));
+  S.appendChild(g);
+
   var d=sec("Qual app para quê");
   CFG.apps.forEach(function(p,k){
     d.appendChild(rw([inp("Função (ex.: 📅 Prazos)",p.f,"",function(v){p.f=v;saveCfg();renderPanel()}),
@@ -269,7 +287,7 @@ function buildSettings(){
       if(!confirm("Substituir tudo deste aparelho pelo conteúdo do arquivo?"))return;
       lists=o.lists.slice(0,12).map(function(l){return{n:sx(l.n,60),i:l.i.map(function(x){return{t:sx(x.t,300),d:!!x.d}})}});
       CFG=clean(o.cfg||DEF);saveCfg();
-      
+
       /* as listas passam a ser salvas antes dos fundos */
       save("jv.lists3",lists);
 
