@@ -54,13 +54,13 @@ jade/
 - [x] Tema Safira 🫧
 - [x] Nova paleta do Jade, inspirada em floresta 🍃
 - [x] Efeito de vagalumes no modo Relaxar 🐝
-- [x] Ícones próprios 💡
+- [ ] Ícones próprios 💡
 - [ ] Sons ambiente? 🎶
-- [ ] Editar gavetas da vida 💖
+- [x] Editar gavetas da vida 💖
 - [ ] Informações do significado de cada coisa (num modo tutorial) 🎓
-- [ ] Reordenar e Renomear listas 🪧
-- [ ] Porcentagem das listas 💯
-- [ ] Subitens 📝
+- [x] Reordenar e Renomear listas 🪧
+- [x] Porcentagem das listas 💯
+- [x] Subitens 📝
 - [ ] Calendário? 📅
 - [ ] Notas diárias? ✍️
 - [ ] Afirmações pra comparar percepções ao longo do tempo? 👀
