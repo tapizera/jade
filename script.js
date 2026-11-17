@@ -98,7 +98,7 @@ nextQ();setInterval(nextQ,18000);$("qt").onclick=nextQ;
 
 /* listas (cópia do Notion, 15/11) */
 var SEED=[
-{n:"🧠 Decisões e perguntas",i:[]},{n:"📥 Inbox",i:[]},{n:"🔍 Pesquisar",i:[]},{n:"🇯🇵 Assistir",i:[]},{n:"💵 Dinheiro",i:[]},{n:"❔ Curiosidade e outros",i:[]}
+{n:"🧠 Decisões e perguntas",i:[]},{n:"📥 Inbox",i:[]},{n:"🔍 Pesquisar",i:[]},{n:"🎞️ Assistir",i:[]},{n:"💵 Dinheiro",i:[]},{n:"❔ Curiosidade e outros",i:[]}
 ];
 var lists=load("jv.lists3",null);
 if(!lists){lists=SEED.map(function(l){return{n:l.n,i:l.i.map(function(x){return{t:x[0],d:!!x[1]}})}})}
