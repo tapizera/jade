@@ -1,7 +1,7 @@
 (function(){
 var $=function(i){return document.getElementById(i)};
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
 /* configuração pessoal (fica só no navegador) */
 function sx(x,m){return typeof x==="string"?x.slice(0,m):""}
 function ux(x){x=sx(x,500);return /^https:\/\//i.test(x)?x:""}
@@ -105,7 +105,7 @@ if(!lists){lists=SEED.map(function(l){return{n:l.n,i:l.i.map(function(x){return{
 var openIdx=[0];
 var editing=false;
 function ib(t,fn){var b=document.createElement("button");b.type="button";b.className="x";b.textContent=t;b.onclick=fn;return b}
-function commit(){save("jv.lists3",lists);render()}
+function commit(){if(!save("jv.lists3",lists))alert("Sem espaço no navegador! Remova ou diminua o fundo em Ajustes.");render()}
 function render(){
   var sel=$("sel"),cur=sel.value||"0";sel.textContent="";
   lists.forEach(function(l,k){var o=document.createElement("option");o.value=k;o.textContent=l.n;sel.appendChild(o)});
@@ -269,6 +269,9 @@ function buildSettings(){
       if(!confirm("Substituir tudo deste aparelho pelo conteúdo do arquivo?"))return;
       lists=o.lists.slice(0,12).map(function(l){return{n:sx(l.n,60),i:l.i.map(function(x){return{t:sx(x.t,300),d:!!x.d}})}});
       CFG=clean(o.cfg||DEF);saveCfg();
+      
+      /* as listas passam a ser salvas antes dos fundos */
+      save("jv.lists3",lists);
 
       BG_J=(typeof o.bg==="string"&&o.bg.indexOf("data:image/")===0&&o.bg.length<4500000)?o.bg:"";save("jade.bg",BG_J);
       BG_S=(typeof o.bgS==="string"&&o.bgS.indexOf("data:image/")===0&&o.bgS.length<4500000)?o.bgS:"";save("safira.bg",BG_S);
