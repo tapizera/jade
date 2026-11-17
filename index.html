@@ -84,6 +84,7 @@
        <input type="text" id="in" placeholder="Capturar agora" autocomplete="off" aria-label="Capturar agora">
        <button class="btn" type="submit">Adicionar</button>
      </form>
+     <button class="pill" id="roll" type="button">🎡 Roleta</button>
      <div id="lists"></div>
      <p class="note">As listas ficam salvas só neste aparelho. Backup e personalização em ⚙️ Ajustes.</p>
    </section>
@@ -124,6 +125,16 @@
   </div>
   <div class="rw ctr"><button class="btn" id="tgo" type="button">Iniciar</button><button class="pill" id="trs" type="button">Resetar</button></div>
 </section>
+
+<div id="rl" hidden>
+  <div class="rbox">
+    <select id="rsel" aria-label="Lista da roleta"></select>
+    <div class="wheel"><i class="ptr">▼</i><canvas id="wc" width="300" height="300"></canvas></div>
+    <p id="rres"></p>
+    <div class="rw ctr"><button class="btn" id="rgo" type="button">Girar</button><button class="pill" id="rx" type="button">Fechar</button></div>
+  </div>
+</div>
+
 </main>
 
 <nav id="bnav" aria-label="Navegação">
