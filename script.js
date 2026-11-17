@@ -103,6 +103,8 @@ var SEED=[
 var lists=load("jv.lists3",null);
 if(!lists){lists=SEED.map(function(l){return{n:l.n,i:l.i.map(function(x){return{t:x[0],d:!!x[1]}})}})}
 var openIdx=[0];
+var editing=false;
+function ib(t,fn){var b=document.createElement("button");b.type="button";b.className="x";b.textContent=t;b.onclick=fn;return b}
 function commit(){save("jv.lists3",lists);render()}
 function render(){
   var sel=$("sel"),cur=sel.value||"0";sel.textContent="";
@@ -118,14 +120,20 @@ function render(){
     var c=document.createElement("span");c.className="cnt";c.textContent=dn+"/"+l.i.length;
     s.appendChild(a);s.appendChild(c);d.appendChild(s);
     var ul=document.createElement("ul");
-    l.i.forEach(function(it){
+    l.i.forEach(function(it,n){
       var li=document.createElement("li");li.className="it"+(it.d?" done":"");
       var cb=document.createElement("input");cb.type="checkbox";cb.checked=it.d;
       cb.onchange=function(){it.d=cb.checked;commit()};
       var t=document.createElement("span");t.textContent=it.t;
       var x=document.createElement("button");x.type="button";x.className="x";x.textContent="✕";x.setAttribute("aria-label","Apagar");
       x.onclick=function(){l.i=l.i.filter(function(y){return y!==it});commit()};
-      li.appendChild(cb);li.appendChild(t);li.appendChild(x);ul.appendChild(li)});
+      li.appendChild(cb);li.appendChild(t);
+      if(editing){
+        li.appendChild(ib("✏️",function(){var v=prompt("Renomear item",it.t);if(v&&v.trim()){it.t=v.trim().slice(0,300);commit()}}));
+        li.appendChild(ib("▲",function(){if(n>0){l.i.splice(n-1,0,l.i.splice(n,1)[0]);commit()}}));
+        li.appendChild(ib("▼",function(){if(n<l.i.length-1){l.i.splice(n+1,0,l.i.splice(n,1)[0]);commit()}}));
+}
+li.appendChild(x);ul.appendChild(li)});
     d.appendChild(ul);box.appendChild(d)});
   var open=total-done;
   $("bar").style.strokeDashoffset=490.1*(1-(total?done/total:1));
@@ -139,6 +147,7 @@ $("form").onsubmit=function(e){
   var k=parseInt($("sel").value,10)||0;
   lists[k].i.unshift({t:v,d:false});if(openIdx.indexOf(k)<0)openIdx.push(k);
   $("in").value="";commit()};
+$("edt").onclick=function(){editing=!editing;this.textContent=editing?"✅ Pronto":"✏️ Editar";render()};
 /* timer */
 var tmin=load("jv.tmin",25);if(typeof tmin!=="number"||tmin<1||tmin>180)tmin=25;
 var tTotal=tmin*60,tLeft=tTotal,tEnd=0,tRun=null,tDone=false,CIRC=552.92;
