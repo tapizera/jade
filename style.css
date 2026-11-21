@@ -223,7 +223,7 @@ li.sb.done span{text-decoration:line-through;color:var(--mute)}
 input.sbar{width:min(360px,90vw);text-align:center;border-radius:999px;padding:11px 18px;background:color-mix(in srgb,var(--panel) 70%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 @media (min-width:700px){#v-cartas{min-height:calc(100dvh - 40px);align-content:center;gap:28px}}
 @media (max-width:699px){
-  #v-cartas{--w:min(74vw,300px);--h:calc(var(--w)*1.1)}
+  #v-cartas{--w:min(58vw,240px);--h:calc(var(--w)*1.45)}
   .cc[data-o="1"]{transform:translate(-50%,-50%) translateX(calc(var(--w)*.92)) scale(.85)}
   .cc[data-o="-1"]{transform:translate(-50%,-50%) translateX(calc(var(--w)*-.92)) scale(.85)}
   .cc[data-o="2"],.cc[data-o="-2"]{opacity:0;pointer-events:none}
