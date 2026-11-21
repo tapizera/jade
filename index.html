@@ -71,9 +71,13 @@
      <p class="status" id="status"></p>
    </section>
    <section class="panel timer">
-     <h2 style="margin:0">Foco e pausa</h2>
-     <a class="btn" href="#foco">Abrir timer</a>
+     <h2 style="margin:0">⌛ Foco e pausa</h2>
+     <a class="btn" href="#foco">Abrir</a>
      <p class="note" id="mini" style="margin:0">Pronto para começar</p>
+   </section>
+   <section class="panel timer">
+     <h2 style="margin:0">🃏 Cartas Se-Então</h2>
+     <a class="btn" href="#cartas">Abrir</a>
    </section>
   </div>
 
@@ -128,6 +132,28 @@
     <input type="number" id="tmin" min="1" max="180" aria-label="Minutos"><span class="mode">min</span>
   </div>
   <div class="rw ctr"><button class="btn" id="tgo" type="button">Iniciar</button><button class="pill" id="trs" type="button">Resetar</button></div>
+</section>
+
+<section class="foco" id="v-cartas" hidden>
+  <button class="pill back" id="cback" type="button">← Painel</button>
+  <b id="cnum">0/0</b>
+  <div class="cwrap">
+    <div class="cst" id="cst"></div>
+  </div>
+  <div class="csrow">
+    <input type="text" class="sbar" id="csr" placeholder="🔍 Procurar Carta" autocomplete="off" aria-label="Procurar carta">
+  </div>
+  <div class="rw ctr">
+    <button class="pill cico" id="cedit" type="button" aria-label="Editar carta">✏️</button>
+    <button class="pill" id="cnew" type="button" aria-label="Nova carta">➕</button>
+    <button class="pill cico" id="cdel" type="button" aria-label="Apagar carta">❌</button>
+    <button class="pill cico" id="cview" type="button" aria-label="Mudar visualização">📄</button>
+    <!--
+    <button class="pill cnav" id="cprev" type="button" aria-label="Anterior">◀</button>
+    <button class="pill cnav" id="cnext" type="button" aria-label="Próxima">▶</button>
+    -->
+  </div>
+
 </section>
 
 <div id="rl" hidden>

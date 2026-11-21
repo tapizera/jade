@@ -24,9 +24,9 @@ $("theme").onclick=function(){setTheme(root.getAttribute("data-theme")==="jade"?
 $("b-theme").onclick=$("theme").onclick;
 
 /* abas */ 
-var VIEWS=["painel","ajustes","foco","relaxar"];
+var VIEWS=["painel","ajustes","foco","relaxar","cartas"];
 function view(){var h=location.hash.slice(1);if(VIEWS.indexOf(h)<0)h="painel";
-  VIEWS.forEach(function(v){var s=$("v-"+v);if(s)s.hidden=v!==h;var t=$("t-"+v);if(t)t.setAttribute("aria-selected",String(v===h));var b=$("b-"+v);if(b)b.setAttribute("aria-selected",String(v===h))}); document.body.className="v-"+h;$("exit").hidden=h!=="relaxar"}
+  VIEWS.forEach(function(v){var s=$("v-"+v);if(s)s.hidden=v!==h;var t=$("t-"+v);if(t)t.setAttribute("aria-selected",String(v===h));var b=$("b-"+v);if(b)b.setAttribute("aria-selected",String(v===h))}); document.body.className="v-"+h+(h==="cartas"?" v-foco":"");$("exit").hidden=h!=="relaxar"}
   VIEWS.forEach(function(v){var t=$("t-"+v);if(t)t.onclick=function(){location.hash=v};var b=$("b-"+v);if(b)b.onclick=function(){location.hash=v}});
 function toPainel(){location.hash="painel"}
 $("exit").onclick=toPainel;$("fback").onclick=toPainel;
@@ -74,7 +74,7 @@ var Q=[
 ["A vida é simples",""],
 ["Seja quem você precisava quando era mais jovem",""],
 ["Você já sobreviveu a dias piores, siga",""],
-["Não espere a chuva passar; aprenda a dançar encharcado",""],
+["Não espere a chuva passar, aprenda a dançar encharcado",""],
 ["A vida é uma jornada, não uma corrida",""],
 ["Seus erros são degraus necessários para melhorar",""],
 ["Posso não ter chegado lá ainda, mas estou mais perto do que estava ontem",""],
@@ -338,7 +338,7 @@ function buildSettings(){
   var z=sec("Backup");
   var imp=mk("input");imp.type="file";imp.accept="application/json";imp.hidden=true;
   z.appendChild(rw([btn("⬇️ Exportar tudo",function(){
-      var data=JSON.stringify({v:2,cfg:CFG,lists:lists,bg:BG_J,bgS:BG_S},null,2);
+      var data=JSON.stringify({v:2,cfg:CFG,lists:lists,bg:BG_J,bgS:BG_S,cards:kc},null,2);
       var a=mk("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download="jade-backup.json";
       document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1000)}),
     btn("⬆️ Importar",function(){imp.click()}),imp]));
@@ -351,6 +351,9 @@ function buildSettings(){
       lists=o.lists.slice(0,12).map(function(l){return{n:sx(l.n,60),i:l.i.map(function(x){var r={t:sx(x.t,300),d:!!x.d};if(Array.isArray(x.s)&&x.s.length)r.s=x.s.filter(function(y){return y&&typeof y.t==="string"}).slice(0,30).map(function(y){return{t:sx(y.t,300),d:!!y.d}});return r})}});
       CFG=clean(o.cfg||DEF);saveCfg();
 
+      /* salvar as cartas no backup */
+      if(Array.isArray(o.cards)){kc=o.cards.filter(function(c){return c&&typeof c.se==="string"&&typeof c.en==="string"}).slice(0,200).map(function(c){return{se:sx(c.se,120),en:sx(c.en,400),w:sx(c.w,80)}});kSave();kReset();ki=0;ke=false;kr=false;kRender()}
+
       /* as listas passam a ser salvas antes dos fundos */
       save("jv.lists3",lists);
 
@@ -361,6 +364,58 @@ function buildSettings(){
     r.readAsText(fl)};
   z.appendChild(mk("p","note","Tudo fica salvo só neste aparelho. Exporte para levar para outro ou guardar uma cópia."));
   S.appendChild(z)}
+/* cartas SE→ENTÃO */
+var kc=load("jv.cards",[]);if(!Array.isArray(kc))kc=[];
+kc=kc.filter(function(c){return c&&typeof c.se==="string"&&typeof c.en==="string"}).slice(0,200).map(function(c){return{se:sx(c.se,120),en:sx(c.en,400),w:sx(c.w,80)}});
+var ki=0,kr=false,ke=false,kn={},km=load("jv.view",0),kfl=false;if([0,1,2].indexOf(km)<0)km=0;
+function kSave(){save("jv.cards",kc)}
+function kReset(){$("cst").textContent="";kn={}}
+function kIn(ph,v,m,fn){var t=mk("textarea","ci");t.placeholder=ph;t.value=v;t.maxLength=m;t.rows=2;t.oninput=function(){fn(t.value);kSave()};t.onclick=function(e){e.stopPropagation()};return t}
+function kNew(){if(kc.length>=200)return;kc.push({se:"",en:"",w:""});kReset();ki=kc.length-1;kr=true;ke=true;kRender();var t=$("cst").querySelector("textarea");if(t)t.focus()}
+
+function kFill(e,i,o){
+  var c=kc[i],ed=o===0&&ke,h=mk("div","ch"),b=mk("div","cb");e.textContent="";
+  h.appendChild(mk("small","","SE"));b.appendChild(mk("small","","ENTÃO"));
+  if(ed){h.appendChild(kIn("SE…",c.se,120,function(v){c.se=v}));b.appendChild(kIn("ENTÃO…",c.en,400,function(v){c.en=v}))}
+  else{h.appendChild(mk("span","",c.se||"…"));b.appendChild(mk("span","",c.en||"…"))}
+  e.className="cc m"+(ed?0:km);
+  if(km===2&&!ed){var fc=(o===0&&kr)?b:h;e.appendChild(fc);if(kfl&&o===0)fc.classList.add("fl")}
+  else{e.appendChild(h);e.appendChild(b)}
+  e.onclick=function(){if(o!==0)kGo(i);else if(km===2&&!ed){kr=!kr;kfl=true;kRender();kfl=false}}}
+function kRender(){
+  var st=$("cst"),n=kc.length,seen={};
+  $("cnum").textContent=n?(ki+1)+"/"+n:"0/0";
+  [0,1,-1,2,-2].forEach(function(o){if(!n)return;var i=((ki+o)%n+n)%n;if(seen[i]!==undefined)return;seen[i]=o;
+    var e=kn[i];if(!e){e=mk("div","cc");kn[i]=e;st.appendChild(e)}
+    e.setAttribute("data-o",o);kFill(e,i,o)});
+  Object.keys(kn).forEach(function(k){if(seen[k]===undefined){kn[k].remove();delete kn[k]}});
+  $("cedit").hidden=$("cdel").hidden=!n;$("cedit").textContent=ke?"✔️":"✏️"}
+function kGo(n){var t=Math.max(1,kc.length);ki=((n%t)+t)%t;kr=false;ke=false;kRender()}
+function kFind(from){var q=$("csr").value.trim().toLowerCase();if(!q||!kc.length)return;
+  for(var j=0;j<kc.length;j++){var i=(from+j)%kc.length,c=kc[i];
+    if((c.se+" "+c.en+" "+c.w).toLowerCase().indexOf(q)>-1){kGo(i);return}}}
+$("cback").onclick=toPainel;
+
+/*
+$("cprev").onclick=function(){kGo(ki-1)};
+$("cnext").onclick=function(){kGo(ki+1)};
+*/
+
+$("cnew").onclick=kNew; 
+function kV(){$("cview").textContent=["📄","⚖️","🔄"][km];$("cview").title=["Padrão","Metade","Virar"][km]}
+$("cview").onclick=function(){km=(km+1)%3;save("jv.view",km);kr=false;kV();kRender()};
+kV();
+$("cst").onclick=function(){if(!kc.length)kNew()};
+$("csr").oninput=function(){kFind(0)};
+$("csr").onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();kFind(ki+1)}};
+$("cedit").onclick=function(){ke=!ke;kr=true;
+  if(!ke){var c=kc[ki];if(c&&!c.se&&!c.en&&!c.w){kc.splice(ki,1);kSave();kReset();if(ki>=kc.length)ki=Math.max(0,kc.length-1)}}
+  kRender()};
+$("cdel").onclick=function(){if(!kc.length||!confirm("Apagar esta carta?"))return;kc.splice(ki,1);kSave();ke=false;kr=false;kReset();if(ki>=kc.length)ki=Math.max(0,kc.length-1);kRender()};
+addEventListener("keydown",function(e){if(location.hash!=="#cartas")return;var t=e.target.tagName;
+  if(t==="TEXTAREA"||t==="INPUT"){if(e.key==="Escape")e.target.blur();return}
+  if(e.key==="ArrowLeft")kGo(ki-1);else if(e.key==="ArrowRight")kGo(ki+1);else if(e.key==="Escape")toPainel()});
+kRender();
 applyBg();renderPanel();buildSettings();tick();tdraw();
 render();
 })();
