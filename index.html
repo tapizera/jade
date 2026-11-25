@@ -94,6 +94,11 @@
        <button class="btn" type="submit">Adicionar</button>
      </form>
      <div id="lists"></div>
+     <details class="lst" id="tr">
+       <summary><span>🗑️ Lixeira</span><span class="cnt" id="trn">0</span></summary>
+       <ul id="trl"></ul>
+       <div class="io"><button class="pill" id="tre" type="button">Esvaziar</button></div>
+     </details>
      <p class="note">As listas ficam salvas só neste aparelho. Backup e personalização em ⚙️ Ajustes.</p>
    </section>
   </div>
@@ -155,6 +160,15 @@
   </div>
 
 </section>
+
+<div id="mv" hidden>
+  <div class="rbox">
+    <b id="mvt">Mover para…</b>
+    <div id="mvb" class="mvb"></div>
+    <select id="mvs" aria-label="Lista de destino"></select>
+    <div class="rw ctr"><button class="btn" id="mvgo" type="button">Mover</button><button class="pill" id="mvx" type="button">Cancelar</button></div>
+  </div>
+</div>
 
 <div id="rl" hidden>
   <div class="rbox">
