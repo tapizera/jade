@@ -263,3 +263,11 @@ input.sbar{width:min(360px,90vw);text-align:center;border-radius:999px;padding:1
 .mvb{display:grid;gap:8px;width:100%;max-height:50vh;overflow:auto}
 .mvb .pill{text-align:left;padding:12px 16px;border-radius:14px}
 .mvb .pill:disabled{opacity:.4;cursor:default}
+
+li.it{row-gap:0}
+.dsc{margin-top:-6px}
+
+#apps a{color:var(--acc);text-decoration:underline;text-underline-offset:3px}
+#apps a:hover{color:var(--warm)}
+
+#am{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(0,0,0,.6);padding:16px}
