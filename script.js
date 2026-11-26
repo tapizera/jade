@@ -488,3 +488,29 @@ kRender();
 applyBg();renderPanel();buildSettings();tick();tdraw();
 render();
 })();
+
+/* mudar icone jade x safira ao trocar de tema */
+const ICONES = {
+  jade:   { fav: 'favicon-32.png',        apple: 'apple-touch-icon.png' },
+  safira: { fav: 'safira-favicon-32.png', apple: 'safira-apple-touch-icon.png' }
+};
+
+function trocarIcone(tema) {
+  const i = ICONES[tema] || ICONES.jade;
+  const fav = document.getElementById('favicon');
+  const apple = document.getElementById('apple-icon');
+  if (fav) fav.href = i.fav;
+  if (apple) apple.href = i.apple;
+}
+
+function temaAtual() {
+  const txt = [document.documentElement, document.body]
+    .map(e => e.className + ' ' + Object.values(e.dataset).join(' '))
+    .join(' ').toLowerCase();
+  return /safira|\bmar\b/.test(txt) ? 'safira' : 'jade';
+}
+
+const aoMudar = () => trocarIcone(temaAtual());
+new MutationObserver(aoMudar).observe(document.documentElement, { attributes: true });
+new MutationObserver(aoMudar).observe(document.body, { attributes: true });
+aoMudar();
